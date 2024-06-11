@@ -1,24 +1,17 @@
 import requests
+from config import WEATHER_API_KEY, TRAFFIC_API_KEY
+from utils.logger import logger
 
-def fetch_weather_data(api_key, location):
-    url = f"http://api.openweathermap.org/data/2.5/weather?q={location}&appid={api_key}"
+def fetch_weather_data(location):
+    logger.info(f"Fetching weather data for {location}")
+    url = f"http://api.openweathermap.org/data/2.5/weather?q={location}&appid={WEATHER_API_KEY}"
     response = requests.get(url)
+    response.raise_for_status()
     return response.json()
 
-def fetch_traffic_data(api_key, origin, destination):
-    url = f"https://maps.googleapis.com/maps/api/directions/json?origin={origin}&destination={destination}&key={api_key}"
+def fetch_traffic_data(origin, destination):
+    logger.info(f"Fetching traffic data from {origin} to {destination}")
+    url = f"https://maps.googleapis.com/maps/api/directions/json?origin={origin}&destination={destination}&key={TRAFFIC_API_KEY}"
     response = requests.get(url)
+    response.raise_for_status()
     return response.json()
-
-if __name__ == "__main__":
-    weather_api_key = 'Y16d2462a5f7f467b846a2f1bcc26231a'
-    traffic_api_key = 'AIzaSyCO8x0KhEGJhNtNtZhNU3weuu3ljIAARTk'
-    location = "London"
-    origin = "New York"
-    destination = "Los Angeles"
-    
-    weather_data = fetch_weather_data(weather_api_key, location)
-    print("Weather Data:", weather_data)
-    
-    traffic_data = fetch_traffic_data(traffic_api_key, origin, destination)
-    print("Traffic Data:", traffic_data)
